@@ -6,3 +6,5 @@ src/api/__pycache__
 .env
 src/schemas/__pycache__
 src/utils/__pycache__
+/.ruff_cache
+/allure-results

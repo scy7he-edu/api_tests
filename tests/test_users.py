@@ -2,7 +2,14 @@ import pytest
 
 from config import Credentials
 from src.api.base_client import BaseClient
-from src.schemas.user_schemas import UserListSchema, UserSchema
+from src.schemas.user_schemas import (
+    UserListCarts,
+    UserListPosts,
+    UserListSchema,
+    UserListTodos,
+    UserSchema,
+    UserTokensSchema,
+)
 
 credentials = Credentials()
 
@@ -85,3 +92,42 @@ def test_sort_and_order_users(users_client):
     response = users_client.sort_and_order_users("id", "desc")
     response_data = BaseClient.base_assertion(response, 200)
     assert response_data["users"][0]["id"] == 208
+
+
+@pytest.mark.positive
+def test_get_user_todos(users_client):
+    response = users_client.get_user_todos(2)
+    response_data = BaseClient.base_assertion(response, 200)
+    UserListTodos.model_validate(response_data)
+
+
+@pytest.mark.positive
+def test_get_user_carts(users_client):
+    response = users_client.get_user_carts(2)
+    response_data = BaseClient.base_assertion(response, 200)
+    UserListCarts.model_validate(response_data)
+
+
+@pytest.mark.positive
+def test_get_user_posts(users_client):
+    response = users_client.get_user_posts(3)
+    response_data = BaseClient.base_assertion(response, 200)
+    UserListPosts.model_validate(response_data)
+
+
+@pytest.mark.positive
+def test_login_user_get_tokens(users_client):
+    response = users_client.login_user_get_tokens(
+        Credentials.username, Credentials.password
+    )
+    response_data = BaseClient.base_assertion(response, 200)
+    UserTokensSchema.model_validate(response_data)
+    assert response_data["username"] == Credentials.username
+
+
+@pytest.mark.positive
+def test_get_current_auth_user(users_client, auth_token):
+    response = users_client.get_current_auth_user(auth_token)
+    response_data = BaseClient.base_assertion(response, 200)
+    assert response_data["username"] == Credentials.username
+    assert "email" in response_data
