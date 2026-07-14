@@ -15,3 +15,22 @@ class Credentials:
     @property
     def user_data(self) -> dict:
         return {"firstName": self.firstName, "lastName": self.lastName, "age": self.age}
+
+    @property
+    def product_data(self) -> dict:
+        return {
+            "id": 999,
+            "title": "Test Item",
+            "description": "some test item, heh",
+            "category": "test item, obviously",
+            "price": 17.99,
+        }
+
+    @property
+    def update_product(self) -> dict:
+        return {
+            "title": "test item",
+            "description": "some test item, again.",
+            "category": "yep, test item",
+            "price": 99.99,
+        }
