@@ -63,6 +63,12 @@ pytest
 ```bash
 pytest -m positive  # запуск только позитивных тестов
 pytest -m negative  # запуск только негативных тестов
+pytest -m users  # запуск только тестов users
+pytest -m products  # запуск только тестов products
+pytest -m quotes  # запуск только тестов quotes
+pytest -m comments  # запуск только тестов comments
+pytest -m posts  # запуск только тестов posts
+pytest -m recipes  # запуск только тестов recipes
 ```
 
 ## Просмотр отчетов Allure

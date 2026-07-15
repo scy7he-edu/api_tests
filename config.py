@@ -34,3 +34,15 @@ class Credentials:
             "category": "yep, test item",
             "price": 99.99,
         }
+
+    @property
+    def comment_data(self) -> dict:
+        return {"body": "some test comment, yo!", "postId": 3, "userId": 5}
+
+    @property
+    def post_data(self) -> dict:
+        return {"title": "test post title", "userId": 5, "body": "test post body"}
+
+    @property
+    def recipe_data(self) -> dict:
+        return {"id": 999, "name": "test meal name"}
