@@ -7,6 +7,7 @@ from src.api.quotes_client import QuotesClient
 from src.api.comments_client import CommentsClient
 from src.api.posts_client import PostsClient
 from src.api.recipes_client import RecipesClient
+from src.api.carts_client import CartsClient
 
 
 @pytest.fixture
@@ -43,6 +44,12 @@ def posts_client():
 def recipes_client():
     recipes_client = RecipesClient()
     return recipes_client
+
+
+@pytest.fixture
+def carts_client():
+    carts_client = CartsClient()
+    return carts_client
 
 
 @pytest.fixture(scope="function")

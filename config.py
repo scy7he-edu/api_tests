@@ -46,3 +46,19 @@ class Credentials:
     @property
     def recipe_data(self) -> dict:
         return {"id": 999, "name": "test meal name"}
+
+    @property
+    def cart_data(self) -> dict:
+        return {
+            "userId": 1,
+            "products": [
+                {
+                    "id": 144,
+                    "quantity": 4,
+                },
+                {
+                    "id": 98,
+                    "quantity": 1,
+                },
+            ],
+        }

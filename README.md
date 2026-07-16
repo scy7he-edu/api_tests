@@ -69,6 +69,7 @@ pytest -m quotes  # запуск только тестов quotes
 pytest -m comments  # запуск только тестов comments
 pytest -m posts  # запуск только тестов posts
 pytest -m recipes  # запуск только тестов recipes
+pytest -m carts  #  запуск только тестов carts
 ```
 
 ## Просмотр отчетов Allure
