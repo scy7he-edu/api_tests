@@ -1,4 +1,5 @@
-from src.api.base_client import BaseClient
+from src.api.base.base_client import BaseClient
+from src.api.posts.posts_schemas import CreatePostRequestSchema
 
 
 class PostsClient(BaseClient):
@@ -35,11 +36,13 @@ class PostsClient(BaseClient):
     def get_post_comments(self, post_id: int):
         return self._make_request("GET", f"/posts/{post_id}/comments")
 
-    def add_post(self, post_data: dict):
-        return self._make_request("POST", "/posts/add", json=post_data)
+    def add_post(self, post_data: CreatePostRequestSchema):
+        return self._make_request("POST", "/posts/add", json=post_data.model_dump())
 
-    def update_post(self, post_id: int, post_data: dict):
-        return self._make_request("PATCH", f"/posts/{post_id}", json=post_data)
+    def update_post(self, post_id: int, post_data: CreatePostRequestSchema):
+        return self._make_request(
+            "PATCH", f"/posts/{post_id}", json=post_data.model_dump()
+        )
 
     def delete_post(self, post_id: int):
         return self._make_request("DELETE", f"/posts/{post_id}")

@@ -1,4 +1,5 @@
-from src.api.base_client import BaseClient
+from src.api.base.base_client import BaseClient
+from src.api.products.products_schemas import CreateProductRequestSchema
 
 
 class ProductsClient(BaseClient):
@@ -29,14 +30,22 @@ class ProductsClient(BaseClient):
     def get_products_by_category(self, category: str):
         return self._make_request("GET", f"/products/category/{category}")
 
-    def add_product(self, product_data: dict):
-        return self._make_request("POST", "/products/add", json=product_data)
+    def add_product(self, product_data: CreateProductRequestSchema):
+        return self._make_request(
+            "POST", "/products/add", json=product_data.model_dump()
+        )
 
-    def update_product(self, product_data: dict, product_id: int):
-        return self._make_request("PATCH", f"/products/{product_id}", json=product_data)
+    def update_product(self, product_data: CreateProductRequestSchema, product_id: int):
+        return self._make_request(
+            "PATCH", f"/products/{product_id}", json=product_data.model_dump()
+        )
 
-    def rewrite_product(self, product_data: dict, product_id: int):
-        return self._make_request("PUT", f"/products/{product_id}", json=product_data)
+    def rewrite_product(
+        self, product_data: CreateProductRequestSchema, product_id: int
+    ):
+        return self._make_request(
+            "PUT", f"/products/{product_id}", json=product_data.model_dump()
+        )
 
     def delete_product(self, product_id: int):
         return self._make_request("DELETE", f"/products/{product_id}")

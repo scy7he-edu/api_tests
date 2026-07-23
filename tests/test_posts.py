@@ -1,90 +1,96 @@
 import pytest
 
-from config import Credentials
-from src.api.base_client import BaseClient
-from src.schemas.posts_schemas import (
-    PostSchema,
+from src.utils.data_generator import post_data, invalid_ids
+from src.utils.assertions import Asserts
+from src.api.posts.posts_schemas import (
     PostListSchema,
+    PostSchema,
     PostTagListSchema,
-    PostCommentsListSchema,
+    PostListCommentsSchema,
 )
-
-credentials = Credentials()
 
 
 @pytest.mark.posts
 class TestPosts:
     @pytest.mark.positive
-    def test_get_all_posts(self, posts_client):
-        response = posts_client.get_all_posts()
-        response_data = BaseClient.base_assertion(response, 200)
+    def test_get_all_posts(self, api):
+        response = api.posts.get_all_posts()
+        response_data = Asserts.base_assertion(response, 200)
         PostListSchema.model_validate(response_data)
 
     @pytest.mark.positive
-    def test_get_single_post(self, posts_client):
-        response = posts_client.get_single_post(1)
-        response_data = BaseClient.base_assertion(response, 200)
+    def test_get_single_post(self, api):
+        response = api.posts.get_single_post(1)
+        response_data = Asserts.base_assertion(response, 200)
         PostSchema.model_validate(response_data)
 
     @pytest.mark.positive
-    def test_search_posts(self, posts_client):
-        response = posts_client.search_posts("love")
-        response_data = BaseClient.base_assertion(response, 200)
+    def test_search_posts(self, api):
+        response = api.posts.search_posts("love")
+        response_data = Asserts.base_assertion(response, 200)
         PostListSchema.model_validate(response_data)
 
     @pytest.mark.positive
-    def test_limit_skip_posts(self, posts_client):
+    def test_limit_skip_posts(self, api):
         selection = ["id", "title", "body", "tags", "reactions", "views", "userId"]
-        response = posts_client.limit_skip_posts(10, 10, *selection)
-        BaseClient.base_assertion(response, 200)
+        response = api.posts.limit_skip_posts(10, 10, *selection)
+        Asserts.base_assertion(response, 200)
 
     @pytest.mark.positive
-    def test_sort_posts(self, posts_client):
-        response = posts_client.sort_posts("id", "asc")
-        response_data = BaseClient.base_assertion(response, 200)
+    def test_sort_posts(self, api):
+        response = api.posts.sort_posts("id", "asc")
+        response_data = Asserts.base_assertion(response, 200)
         PostListSchema.model_validate(response_data)
 
     @pytest.mark.positive
-    def test_get_all_posts_tags(self, posts_client):
-        response = posts_client.get_all_posts_tags()
+    def test_get_all_posts_tags(self, api):
+        response = api.posts.get_all_posts_tags()
         assert response.status_code == 200
         PostTagListSchema.model_validate(response.json())
 
     @pytest.mark.positive
-    def test_get_posts_tag_list(self, posts_client):
-        response = posts_client.get_posts_tag_list()
+    def test_get_posts_tag_list(self, api):
+        response = api.posts.get_posts_tag_list()
         assert response.status_code == 200
         assert isinstance(response.json(), list)
 
     @pytest.mark.positive
-    def test_get_posts_by_tag(self, posts_client):
-        response = posts_client.get_posts_by_tag("life")
-        response_data = BaseClient.base_assertion(response, 200)
+    def test_get_posts_by_tag(self, api):
+        response = api.posts.get_posts_by_tag("life")
+        response_data = Asserts.base_assertion(response, 200)
         PostListSchema.model_validate(response_data)
 
     @pytest.mark.positive
-    def test_get_all_posts_by_user_id(self, posts_client):
-        response = posts_client.get_all_posts_by_user_id(5)
-        response_data = BaseClient.base_assertion(response, 200)
+    def test_get_all_posts_by_user_id(self, api):
+        response = api.posts.get_all_posts_by_user_id(5)
+        response_data = Asserts.base_assertion(response, 200)
         PostListSchema.model_validate(response_data)
 
     @pytest.mark.positive
-    def test_get_post_comments(self, posts_client):
-        response = posts_client.get_post_comments(1)
-        response_data = BaseClient.base_assertion(response, 200)
-        PostCommentsListSchema.model_validate(response_data)
+    def test_get_post_comments(self, api):
+        response = api.posts.get_post_comments(1)
+        response_data = Asserts.base_assertion(response, 200)
+        PostListCommentsSchema.model_validate(response_data)
 
     @pytest.mark.positive
-    def test_add_post(self, posts_client):
-        response = posts_client.add_post(credentials.post_data)
+    def test_add_post(self, api):
+        response = api.posts.add_post(post_data())
         assert response.status_code == 201
 
     @pytest.mark.positive
-    def test_update_post(self, posts_client):
-        response = posts_client.update_post(1, credentials.post_data)
-        BaseClient.base_assertion(response, 200)
+    def test_update_post(self, api):
+        response = api.posts.update_post(1, post_data())
+        Asserts.base_assertion(response, 200)
 
     @pytest.mark.positive
-    def test_delete_post(self, posts_client):
-        response = posts_client.delete_post(1)
-        BaseClient.base_assertion(response, 200)
+    def test_delete_post(self, api):
+        response = api.posts.delete_post(1)
+        Asserts.base_assertion(response, 200)
+
+
+class TestPostsNegative:
+    @pytest.mark.negative
+    @pytest.mark.parametrize("invalid_post_id", invalid_ids(5, 9999, 99999))
+    def test_get_invalid_post(self, api, invalid_post_id):
+        response = api.posts.get_single_post(invalid_post_id)
+        assert response.status_code == 404

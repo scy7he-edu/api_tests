@@ -1,4 +1,4 @@
-from src.api.base_client import BaseClient
+from src.api.base.base_client import BaseClient
 
 
 class QuotesClient(BaseClient):

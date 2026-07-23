@@ -1,12 +1,15 @@
 import allure
 import httpx
 
-from config import Credentials
-
 
 class BaseClient:
-    def __init__(self):
-        self.client = httpx.Client(base_url=Credentials.URL)
+    def __init__(self, client: httpx.Client):
+        self.client = client
+
+    def _get(self, endpoint: str, **params):
+        return self._make_request(
+            "GET", endpoint, params={k: v for k, v in params.items() if v is not None}
+        )
 
     def _make_request(self, method: str, endpoint: str, **kwargs):
         print(f"\n---> {method} to {endpoint}")
@@ -25,10 +28,3 @@ class BaseClient:
             attachment_type=allure.attachment_type.TEXT,
         )
         return rq
-
-    @staticmethod
-    def base_assertion(response, response_code: int):
-        assert response.status_code == response_code
-        response_data = response.json()
-        assert isinstance(response_data, dict)
-        return response_data

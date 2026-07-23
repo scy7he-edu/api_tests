@@ -1,61 +1,26 @@
 import pytest
 
 from config import Credentials
-from src.api.users_client import UsersClient
-from src.api.products_client import ProductsClient
-from src.api.quotes_client import QuotesClient
-from src.api.comments_client import CommentsClient
-from src.api.posts_client import PostsClient
-from src.api.recipes_client import RecipesClient
-from src.api.carts_client import CartsClient
+from src.api.base.api_manager import ApiManager
+from src.utils.data_generator import user_auth_data
+from src.utils.data_generator import INVALID_USER_PAYLOADS
+
+
+@pytest.fixture(params=INVALID_USER_PAYLOADS, ids=lambda data: data[1])
+def invalid_user_payload(request):
+    payload, case_desc = request.param
+    return payload
+
+
+@pytest.fixture(scope="session")
+def api():
+    manager = ApiManager(base_url=Credentials.URL)
+    yield manager
+    manager.http.close()
 
 
 @pytest.fixture
-def users_client():
-    users_client = UsersClient()
-    return users_client
-
-
-@pytest.fixture
-def products_client():
-    products_client = ProductsClient()
-    return products_client
-
-
-@pytest.fixture
-def quotes_client():
-    quotes_client = QuotesClient()
-    return quotes_client
-
-
-@pytest.fixture
-def comments_client():
-    comments_client = CommentsClient()
-    return comments_client
-
-
-@pytest.fixture
-def posts_client():
-    posts_client = PostsClient()
-    return posts_client
-
-
-@pytest.fixture
-def recipes_client():
-    recipes_client = RecipesClient()
-    return recipes_client
-
-
-@pytest.fixture
-def carts_client():
-    carts_client = CartsClient()
-    return carts_client
-
-
-@pytest.fixture(scope="function")
-def auth_token(users_client):
-    response = users_client.login_user_get_tokens(
-        Credentials.username, Credentials.password
-    )
+def auth_token(api):
+    response = api.users.login_user_get_tokens(user_auth_data())
     response_data = response.json()
-    return response_data["accessToken"]
+    return response_data.get("accessToken") or response_data.get("token")

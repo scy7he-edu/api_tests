@@ -1,4 +1,5 @@
-from src.api.base_client import BaseClient
+from src.api.base.base_client import BaseClient
+from src.api.recipes.recipes_schemas import AddRecipeRequestSchema
 
 
 class RecipesClient(BaseClient):
@@ -29,11 +30,16 @@ class RecipesClient(BaseClient):
     def get_recipes_by_meal(self, meal_type: str):
         return self._make_request("GET", f"/recipes/meal-type/{meal_type}")
 
-    def add_recipe(self, recipe_data: dict):
-        return self._make_request("POST", "/recipes/add", json=recipe_data)
+    def add_recipe(self, recipe_data: AddRecipeRequestSchema):
+        return self._make_request("POST", "/recipes/add", json=recipe_data.model_dump())
 
-    def update_recipe(self, recipe_id: int, recipe_data: dict):
-        return self._make_request("PATCH", f"/recipes/{recipe_id}", json=recipe_data)
+    def update_recipe(self, recipe_id: int, recipe_data: AddRecipeRequestSchema):
+        payload = (
+            recipe_data.model_dump()
+            if hasattr(recipe_data, "model_dump")
+            else recipe_data
+        )
+        return self._make_request("PATCH", f"/recipes/{recipe_id}", json=payload)
 
     def delete_recipe(self, recipe_id: int):
         return self._make_request("DELETE", f"/recipes/{recipe_id}")
