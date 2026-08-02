@@ -1,0 +1,20 @@
+services:
+  allure_web:
+    build: ./allure_web
+    volumes:
+      - allure-results-data:/allure-results
+    ports:
+      - "4040:4040"
+    depends_on:
+      api_tests:
+        condition: service_completed_successfully
+
+  api_tests:
+    build:
+      context: ..
+      dockerfile: compose_images/api_tests/Dockerfile
+    volumes:
+      - allure-results-data:/usr/src/api_tests/allure-results
+
+volumes:
+  allure-results-data:
