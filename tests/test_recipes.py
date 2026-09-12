@@ -15,6 +15,7 @@ class TestRecipes:
     def test_get_all_recipes(self, api):
         response = api.recipes.get_all_recipes()
         response_data = Asserts.base_assertion(response, 200)
+        assert len(response_data["recipes"]) > 0
         RecipeListResponseSchema.model_validate(response_data)
 
     @pytest.mark.positive
@@ -25,8 +26,12 @@ class TestRecipes:
 
     @pytest.mark.positive
     def test_search_recipes(self, api):
-        response = api.recipes.search_recipes("Margherita")
+        query = "Margherita"
+        response = api.recipes.search_recipes(query)
         response_data = Asserts.base_assertion(response, 200)
+        assert len(response_data["recipes"]) > 0
+        for recipe in response_data["recipes"]:
+            assert query.lower() in recipe["name"].lower()
         RecipeListResponseSchema.model_validate(response_data)
 
     @pytest.mark.positive
@@ -62,8 +67,12 @@ class TestRecipes:
 
     @pytest.mark.positive
     def test_get_recipes_by_tag(self, api):
-        response = api.recipes.get_recipes_by_tag("Pakistani")
+        tag = "Pakistani"
+        response = api.recipes.get_recipes_by_tag(tag)
         response_data = Asserts.base_assertion(response, 200)
+        assert len(response_data["recipes"]) > 0
+        for recipe in response_data["recipes"]:
+            assert tag in recipe["tags"]
         RecipeListResponseSchema.model_validate(response_data)
 
     @pytest.mark.positive
@@ -75,7 +84,7 @@ class TestRecipes:
     @pytest.mark.positive
     def test_add_recipe(self, api):
         response = api.recipes.add_recipe(recipe_data())
-        response_data = Asserts.base_assertion(response, 200)
+        response_data = Asserts.base_assertion(response, 201)
         AddRecipeRequestSchema.model_validate(response_data)
 
     @pytest.mark.positive

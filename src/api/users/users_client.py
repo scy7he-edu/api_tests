@@ -36,22 +36,6 @@ class UsersClient(BaseClient):
             "GET", "/users/filter", params={"key": key, "value": value}
         )
 
-    # def filter_users(self, filter_params: dict):
-    #    query_string = ".".join(
-    #        [f"key={key}&value={value}" for key, value in filter_params.items()]
-    #    )
-    #    return self._make_request("GET", f"/users/filter?{query_string}")
-
-    # def limit_and_skip_users(
-    #     self, limit: int, skip: int, select: list[str] | None = None
-    # ):
-    #     return self._get(
-    #         "/users",
-    #         limit=limit,
-    #         skip=skip,
-    #         select=",".join(select) if select else None,
-    #     )
-
     def limit_and_skip_users(self, limit: int, skip: int, *args):
         query_string = ",".join(args)
         return self._make_request(

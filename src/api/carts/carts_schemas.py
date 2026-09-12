@@ -1,4 +1,5 @@
 import pydantic
+from src.api.base.base_schemas import BasePaginationSchema
 
 
 class CartProductResponseSchema(pydantic.BaseModel):
@@ -22,7 +23,7 @@ class CartSchema(pydantic.BaseModel):
     totalQuantity: int
 
 
-class CartListSchema(pydantic.BaseModel):
+class CartListSchema(BasePaginationSchema):
     carts: list[CartSchema]
 
 

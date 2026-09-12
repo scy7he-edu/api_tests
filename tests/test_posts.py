@@ -77,8 +77,13 @@ class TestPosts:
 
     @pytest.mark.positive
     def test_add_post(self, api):
-        response = api.posts.add_post(post_data())
-        assert response.status_code == 201
+        payload = post_data()
+        response = api.posts.add_post(payload)
+        response_data = Asserts.base_assertion(response, 201)
+        assert response_data["title"] == payload.title
+        assert response_data["body"] == payload.body
+        assert response_data["userId"] == payload.userId
+        assert "id" in response_data
 
     @pytest.mark.positive
     def test_update_post(self, api):

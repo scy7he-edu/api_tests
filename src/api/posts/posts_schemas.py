@@ -1,4 +1,5 @@
 import pydantic
+from src.api.base.base_schemas import BasePaginationSchema
 
 
 class PostReactionsSchema(pydantic.BaseModel):
@@ -16,7 +17,7 @@ class PostSchema(pydantic.BaseModel):
     userId: int
 
 
-class PostListSchema(pydantic.BaseModel):
+class PostListSchema(BasePaginationSchema):
     posts: list[PostSchema]
 
 

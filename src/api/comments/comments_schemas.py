@@ -1,4 +1,5 @@
 import pydantic
+from src.api.base.base_schemas import BasePaginationSchema
 
 
 class CommentUserResponseSchema(pydantic.BaseModel):
@@ -15,7 +16,7 @@ class CommentSchema(pydantic.BaseModel):
     user: CommentUserResponseSchema
 
 
-class CommentListSchema(pydantic.BaseModel):
+class CommentListSchema(BasePaginationSchema):
     comments: list[CommentSchema]
 
 

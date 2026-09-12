@@ -11,6 +11,7 @@ class TestQuotes:
     def test_get_all_quotes(self, api):
         response = api.quotes.get_all_quotes()
         response_data = Asserts.base_assertion(response, 200)
+        assert len(response_data["quotes"]) > 0
         QuoteListResponseSchema.model_validate(response_data)
 
     @pytest.mark.positive
@@ -27,8 +28,13 @@ class TestQuotes:
 
     @pytest.mark.positive
     def test_limit_skip_quotes(self, api):
-        response = api.quotes.limit_skip_quotes(3, 10)
+        limit = 3
+        skip = 10
+        response = api.quotes.limit_skip_quotes(limit=limit, skip=skip)
         response_data = Asserts.base_assertion(response, 200)
+        assert response_data["limit"] == limit
+        assert response_data["skip"] == skip
+        assert len(response_data["quotes"]) == limit
         QuoteListResponseSchema.model_validate(response_data)
 
 

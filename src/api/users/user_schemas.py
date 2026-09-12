@@ -1,4 +1,5 @@
 import pydantic
+from src.api.base.base_schemas import BasePaginationSchema
 
 
 class UserHairResponseSchema(pydantic.BaseModel):
@@ -78,7 +79,7 @@ class UserResponseSchema(pydantic.BaseModel):
     role: str | None = None
 
 
-class UserListResponseSchema(pydantic.BaseModel):
+class UserListResponseSchema(BasePaginationSchema):
     users: list[UserResponseSchema]
 
 

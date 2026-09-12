@@ -14,9 +14,7 @@ class PostsClient(BaseClient):
 
     def limit_skip_posts(self, limit: int, skip: int, *args):
         selection = ",".join(args)
-        return self._make_request(
-            "GET", f"/posts?limit={limit}&skip={skip}&select={selection}"
-        )
+        return self._make_request("GET", "/posts", params={"select": selection})
 
     def sort_posts(self, sort_by: str, order: str):
         return self._make_request("GET", f"/posts?sortBy={sort_by}&order={order}")

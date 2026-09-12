@@ -70,15 +70,31 @@ def update_product(
 
 
 def comment_data(
-    user_id: int = 5, post_id: int = 3, body: str = "Some test comment"
+    body: str | None = None,
+    post_id: str | None = None,
+    user_id: int | None = None,
+    **kwargs,
 ) -> CreateCommentRequestSchema:
-    return CreateCommentRequestSchema(userId=user_id, postId=post_id, body=body)
+    return CreateCommentRequestSchema(
+        body=body if body is not None else fake.sentence(),
+        postId=post_id if post_id is not None else fake.random_int(1, 100),
+        userId=user_id if user_id is not None else fake.random_int(1, 100),
+        **kwargs,
+    )
 
 
 def post_data(
-    user_id: int = 5, title: str = "Test post title", body: str = "Test post body"
+    title: str | None = None,
+    body: str | None = None,
+    user_id: int | None = None,
+    **kwargs,
 ) -> CreatePostRequestSchema:
-    return CreatePostRequestSchema(userId=user_id, title=title, body=body)
+    return CreatePostRequestSchema(
+        title=title if title is not None else fake.sentence(),
+        body=body if body is not None else fake.text(),
+        userId=user_id if user_id is not None else fake.random_int(1, 100),
+        **kwargs,
+    )
 
 
 def recipe_data(name: str = "Test meal") -> AddRecipeRequestSchema:

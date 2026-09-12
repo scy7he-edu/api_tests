@@ -1,4 +1,5 @@
 import pydantic
+from src.api.base.base_schemas import BasePaginationSchema
 
 
 class RecipeResponseSchema(pydantic.BaseModel):
@@ -20,7 +21,7 @@ class RecipeResponseSchema(pydantic.BaseModel):
     mealType: list[str] | None = None
 
 
-class RecipeListResponseSchema(pydantic.BaseModel):
+class RecipeListResponseSchema(BasePaginationSchema):
     recipes: list[RecipeResponseSchema]
 
 

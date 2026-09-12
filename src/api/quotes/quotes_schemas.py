@@ -1,4 +1,5 @@
 import pydantic
+from src.api.base.base_schemas import BasePaginationSchema
 
 
 class QuoteResponseSchema(pydantic.BaseModel):
@@ -7,5 +8,5 @@ class QuoteResponseSchema(pydantic.BaseModel):
     author: str
 
 
-class QuoteListResponseSchema(pydantic.BaseModel):
+class QuoteListResponseSchema(BasePaginationSchema):
     quotes: list[QuoteResponseSchema]
