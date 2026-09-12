@@ -25,22 +25,34 @@ class TestProducts:
 
     @pytest.mark.positive
     def test_search_products(self, api):
-        response = api.products.search_products("phone")
+        query = "phone"
+        response = api.products.search_products(query)
         response_data = Asserts.base_assertion(response, 200)
         ProductListSchema.model_validate(response_data)
+        assert len(response_data["products"]) > 0
+        for item in response_data["products"]:
+            assert (
+                query in item["title"].lower() or query in item["description"].lower()
+            )
 
     @pytest.mark.positive
     def test_limit_and_skip_products(self, api):
         selection = ["id", "title", "description", "category", "price"]
-        response = api.products.limit_and_skip_products(10, 10, *selection)
+        limit, skip = 10, 10
+        response = api.products.limit_and_skip_products(limit, skip, *selection)
         response_data = Asserts.base_assertion(response, 200)
         ProductListSchema.model_validate(response_data)
+        assert response_data["limit"] == limit
+        assert response_data["skip"] == skip
+        assert len(response_data["products"]) == limit
 
     @pytest.mark.positive
     def test_sort_products(self, api):
         response = api.products.sort_products("title", "asc")
         response_data = Asserts.base_assertion(response, 200)
         ProductListSchema.model_validate(response_data)
+        titles = [p["title"] for p in response_data["products"]]
+        assert titles == sorted(titles, key=str.lower)
 
     @pytest.mark.positive
     def test_get_products_categories(self, api):

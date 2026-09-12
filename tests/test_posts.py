@@ -34,7 +34,10 @@ class TestPosts:
     def test_limit_skip_posts(self, api):
         selection = ["id", "title", "body", "tags", "reactions", "views", "userId"]
         response = api.posts.limit_skip_posts(10, 10, *selection)
-        Asserts.base_assertion(response, 200)
+        response_data = Asserts.base_assertion(response, 200)
+        expected_fields = set(selection) | {"id"}
+        for post in response_data["posts"]:
+            assert set(post.keys()) == expected_fields
 
     @pytest.mark.positive
     def test_sort_posts(self, api):
@@ -84,8 +87,11 @@ class TestPosts:
 
     @pytest.mark.positive
     def test_delete_post(self, api):
-        response = api.posts.delete_post(1)
-        Asserts.base_assertion(response, 200)
+        post_id = 1
+        response = api.posts.delete_post(post_id)
+        response_data = Asserts.base_assertion(response, 200)
+        assert response_data["isDeleted"] is True
+        assert response_data["id"] == post_id
 
 
 class TestPostsNegative:

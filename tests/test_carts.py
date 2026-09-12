@@ -12,7 +12,7 @@ class TestCarts:
         response = api.carts.get_all_carts()
         response_data = Asserts.base_assertion(response, 200)
         CartListSchema.model_validate(response_data)
-        assert len(response_data) > 0
+        assert len(response_data["carts"]) > 0
 
     @pytest.mark.positive
     def test_get_single_cart(self, api):
@@ -23,10 +23,13 @@ class TestCarts:
 
     @pytest.mark.positive
     def test_get_carts_by_user(self, api):
-        response = api.carts.get_carts_by_user(1)
+        user_id = 1
+        response = api.carts.get_carts_by_user(user_id)
         response_data = Asserts.base_assertion(response, 200)
         CartListSchema.model_validate(response_data)
-        assert len(response_data) > 0
+        assert len(response_data["carts"]) > 0
+        for cart in response_data["carts"]:
+            assert cart["userId"] == user_id
 
     @pytest.mark.positive
     def test_add_cart(self, api):

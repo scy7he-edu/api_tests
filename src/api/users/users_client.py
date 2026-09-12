@@ -31,11 +31,16 @@ class UsersClient(BaseClient):
     def search_users(self, search: str):
         return self._make_request("GET", f"/users/search?q={search}")
 
-    def filter_users(self, filter_params: dict):
-        query_string = ".".join(
-            [f"key={key}&value={value}" for key, value in filter_params.items()]
+    def filter_users(self, key: str, value: str):
+        return self._make_request(
+            "GET", "/users/filter", params={"key": key, "value": value}
         )
-        return self._make_request("GET", f"/users/filter?{query_string}")
+
+    # def filter_users(self, filter_params: dict):
+    #    query_string = ".".join(
+    #        [f"key={key}&value={value}" for key, value in filter_params.items()]
+    #    )
+    #    return self._make_request("GET", f"/users/filter?{query_string}")
 
     # def limit_and_skip_users(
     #     self, limit: int, skip: int, select: list[str] | None = None

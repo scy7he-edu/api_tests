@@ -13,7 +13,7 @@ class PostsClient(BaseClient):
         return self._make_request("GET", f"/posts/search?q={query}")
 
     def limit_skip_posts(self, limit: int, skip: int, *args):
-        selection = args
+        selection = ",".join(args)
         return self._make_request(
             "GET", f"/posts?limit={limit}&skip={skip}&select={selection}"
         )

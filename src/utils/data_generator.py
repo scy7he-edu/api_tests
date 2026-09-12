@@ -25,11 +25,17 @@ def invalid_ids(count: int = 5, min_id: int = 999, max_id: int = 9999) -> list[i
 
 
 def user_data(
-    first_name: str = fake.name(),
-    last_name: str = fake.last_name(),
-    age: int = fake.random_int(18, 90),
+    first_name: str | None = None,
+    last_name: str | None = None,
+    age: int | None = None,
+    **kwargs,
 ) -> AddUserRequestSchema:
-    return AddUserRequestSchema(firstName=first_name, lastName=last_name, age=age)
+    return AddUserRequestSchema(
+        firstName=first_name if first_name is not None else fake.first_name(),
+        lastName=last_name if last_name is not None else fake.last_name(),
+        age=age if age is not None else fake.random_int(18, 90),
+        **kwargs,
+    )
 
 
 def user_auth_data(
@@ -80,16 +86,15 @@ def recipe_data(name: str = "Test meal") -> AddRecipeRequestSchema:
 
 
 def cart_data(
-    user_id: int = 1, products_data: list[dict] | None = None
+    user_id: int | None = None, products_data: list[dict] | None = None
 ) -> CreateCartRequestSchema:
+    if user_id is None:
+        user_id = fake.random_int(1, 100)
+
     if products_data is None:
         products_data = [
-            {
-                "id": 144,
-                "quantity": 4,
-            },
-            {"id": 98, "quantity": 1},
+            {"id": fake.random_int(1, 50), "quantity": fake.random_int(1, 5)}
         ]
-        products = [CartProductRequestSchema(**product) for product in products_data]
 
+    products = [CartProductRequestSchema(**item) for item in products_data]
     return CreateCartRequestSchema(userId=user_id, products=products)

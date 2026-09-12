@@ -1,4 +1,5 @@
 import pydantic
+from src.api.base.base_schemas import BasePaginationSchema
 
 
 class ProductDimensionsResponseSchema(pydantic.BaseModel):
@@ -23,6 +24,7 @@ class ProductMetaResponseSchema(pydantic.BaseModel):
 
 
 class ProductResponseSchema(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
     id: int
     title: str
     description: str | None = None
@@ -57,7 +59,7 @@ class ProductCategoriesListSchema(pydantic.RootModel[list[ProductCategoriesSchem
     pass
 
 
-class ProductListSchema(pydantic.BaseModel):
+class ProductListSchema(BasePaginationSchema):
     products: list[ProductResponseSchema]
 
 

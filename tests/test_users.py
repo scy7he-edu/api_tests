@@ -67,8 +67,13 @@ class TestUsers:
 
     @pytest.mark.positive
     def test_filter_users(self, api):
-        response = api.users.filter_users({"hair.color": "Brown", "hair.type": "Curly"})
+        filter_key = "hair.color"
+        filter_value = "Brown"
+        response = api.users.filter_users(key=filter_key, value=filter_value)
         response_data = Asserts.base_assertion(response, 200)
+        assert len(response_data["users"]) > 0
+        for user in response_data["users"]:
+            assert user["hair"]["color"].lower() == filter_value.lower()
         UserListResponseSchema.model_validate(response_data)
 
     @pytest.mark.positive
